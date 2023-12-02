@@ -21,14 +21,14 @@ class Game:
     def __init__(self, text: str):
         # Initialize the Game defaults
         self.id: int = 0
-        self.rounds: Round = []
+        self.rounds: list[Round] = []
 
         # Parse the incoming text
         split_text = text.split(":")
 
         # Parse the ID
         prefix = split_text[0]
-        self.id = prefix.replace("Game ", "")
+        self.id = int(prefix.replace("Game ", "").strip())
 
         # Parse the Rounds
         suffix = split_text[1]
@@ -42,9 +42,41 @@ input = open('input.txt', 'r')
 lines = input.readlines()
 
 # Parse each line of the file
+all_games: list[Game] = []
 for line in lines:
     game = Game(line)
-    rounds = game.rounds
+    all_games.append(game)
+
+## PART ONE
+def good_game_filter(game: Game) -> bool:
+    for round in game.rounds:
+        if (round.red > 12) or (round.green > 13) or (round.blue > 14):
+            return False
+    return True
+
+good_games = list(filter(good_game_filter, all_games))
+score = 0
+
+# Print all the good_games
+for game in good_games:
     print(f"Game {game.id}:")
-    for round in rounds:
+    for round in game.rounds:
         print(f"  {round}")
+    score += game.id
+
+print(f"Score: {score}")
+
+## PART TWO
+import functools 
+
+def power_generator(game: Game) -> int:
+    max_red = functools.reduce(lambda a, b: max(a, b), map(lambda round: round.red, game.rounds))
+    max_green = functools.reduce(lambda a, b: max(a, b), map(lambda round: round.green, game.rounds))
+    max_blue = functools.reduce(lambda a, b: max(a, b), map(lambda round: round.blue, game.rounds))
+    return max_red * max_green * max_blue
+
+power_score = 0
+for game in all_games:
+    power_score += power_generator(game)
+
+print(f"Power Score: {power_score}")
