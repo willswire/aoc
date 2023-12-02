@@ -1,6 +1,4 @@
-import re
-
-# Part 2...
+# Number mappings for part 2
 number_mapping = {
 	"one": "o1e",
 	"two": "t2o",
