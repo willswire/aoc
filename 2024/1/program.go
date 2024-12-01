@@ -13,8 +13,12 @@ func main() {
 	left, right := parseLists()
 	slices.Sort(left)
 	slices.Sort(right)
-	result := computeDistance(left, right)
-	fmt.Println(result)
+	distance := computeDistance(left, right)
+	fmt.Println("Distance:", distance)
+
+	frequencyMap := computeFrequency(right)
+	similarityScore := computeSimilarityScore(left, frequencyMap)
+	fmt.Println("Similarity Score:", similarityScore)
 }
 
 func parseLists() ([]int, []int) {
@@ -67,4 +71,20 @@ func abs(x int) int {
 		return -x
 	}
 	return x
+}
+
+func computeFrequency(right []int) map[int]int {
+	frequencyMap := make(map[int]int)
+	for _, num := range right {
+		frequencyMap[num]++
+	}
+	return frequencyMap
+}
+
+func computeSimilarityScore(left []int, frequencyMap map[int]int) int {
+	similarityScore := 0
+	for _, num := range left {
+		similarityScore += num * frequencyMap[num]
+	}
+	return similarityScore
 }
