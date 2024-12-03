@@ -10,15 +10,26 @@ import (
 
 func main() {
 	reports := parseReports()
-	fmt.Println(reports)
-
 	numOfSafeReports := 0
 	for _, report := range reports {
-		if isSafe(report) {
+		if isSafe(report) || canBeMadeSafe(report) {
 			numOfSafeReports++
 		}
 	}
 	fmt.Println(numOfSafeReports)
+}
+
+func canBeMadeSafe(report []int) bool {
+	for i := 0; i < len(report); i++ {
+		modifiedReport := make([]int, 0, len(report)-1)
+		modifiedReport = append(modifiedReport, report[:i]...)
+		modifiedReport = append(modifiedReport, report[i+1:]...)
+
+		if isSafe(modifiedReport) {
+			return true
+		}
+	}
+	return false
 }
 
 func isSafe(report []int) bool {
